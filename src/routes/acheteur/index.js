@@ -4,5 +4,6 @@ const acheteurController = require('../../controllers/acheteur/acheteurControlle
 
 router.get('/', acheteurController.getAcheteur);
 router.post('/register', acheteurController.register);
+router.post('/login', acheteurController.login);
 
 module.exports = router;

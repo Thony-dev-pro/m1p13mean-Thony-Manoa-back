@@ -8,5 +8,6 @@ module.exports = {
     INACTIF: 0,
     ACTIF: 1,
     A_VALIDER: 2
-  }
+  },
+  SALT: 10
 };

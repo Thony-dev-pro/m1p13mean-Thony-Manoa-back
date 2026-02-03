@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const Utilisateur = require('../models/Utilisateur');
-const { TYPE, ETAT } = require('../constant/utilisateur');
+const { TYPE, ETAT, SALT } = require('../constant/utilisateur');
 
 const registration = async (userData) => {
   const { nom, mail, contact, mdp } = userData;
@@ -18,7 +18,7 @@ const registration = async (userData) => {
     throw new Error('Le mot de passe est requis');
   }
   
-  const hashedPassword = await bcrypt.hash(mdp, 10);
+  const hashedPassword = await bcrypt.hash(mdp, SALT);
   
   const newUser = new Utilisateur({
     nom,
@@ -32,6 +32,50 @@ const registration = async (userData) => {
   return await newUser.save();
 };
 
+const validateBoutique = async (userId) => {
+  try {
+    const updatedUser = await Utilisateur.findByIdAndUpdate(
+      userId,
+      { etat: ETAT.ACTIF },
+      { new: true }
+    );
+    return updatedUser;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const login = async (mail, mdp) => {
+  if (!mail) {
+    throw new Error('Le mail est requis');
+  }
+  if (!mdp) {
+    throw new Error('Le mot de passe est requis');
+  }
+
+  const user = await Utilisateur.findOne({ 
+    mail, 
+    type: TYPE.BOUTIQUE 
+  });
+  
+  if (!user) {
+    throw new Error('Utilisateur non trouvé');
+  }
+
+  const isPasswordValid = await bcrypt.compare(mdp, user.mdp);
+  if (!isPasswordValid) {
+    throw new Error('Mot de passe incorrect');
+  }
+
+  if (user.etat !== ETAT.ACTIF) {
+    throw new Error('Compte non activé');
+  }
+
+  return user;
+};
+
 module.exports = {
-  registration
+  registration,
+  validateBoutique,
+  login
 };
