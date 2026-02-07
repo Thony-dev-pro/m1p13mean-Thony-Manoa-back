@@ -1,7 +1,7 @@
 const boutiqueService = require('../../services/boutique.service');
 const jwt = require('jsonwebtoken');
 
-const boutiqueService = require("../../services/boutique/boutiqueService");
+const boutiqueServiceCr = require("../../services/boutique/boutiqueService");
 
 const boutiqueController = {
   getBoutique: (req, res) => {
@@ -43,11 +43,11 @@ const boutiqueController = {
       console.log(error)
       res.status(400).json({ error: error.message });
     }
-  }
+  },
   // GET ALL
   async getAllBoutique(req, res) {
     try {
-      const boutiques = await boutiqueService.getAllBoutique();
+      const boutiques = await boutiqueServiceCr.getAllBoutique();
       res.json(boutiques);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -56,7 +56,7 @@ const boutiqueController = {
   // CREATE
   async createBoutique(req, res) {
     try {
-      const newBoutique = await boutiqueService.createBoutique(req.body);
+      const newBoutique = await boutiqueServiceCr.createBoutique(req.body);
       res.status(201).json(newBoutique);
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -65,7 +65,7 @@ const boutiqueController = {
 
   async modifierInfoBoutique(req, res) {
     try {
-      const boutiques = await boutiqueService.updateBoutiqueInfo(
+      const boutiques = await boutiqueServiceCr.updateBoutiqueInfo(
         req.params.id,
         req.body,
       );
@@ -82,7 +82,7 @@ const boutiqueController = {
 
   async desactiverCompteBoutique(req, res) {
     try {
-      const boutique = await boutiqueService.desactiverCompteBoutique(req.params.id);
+      const boutique = await boutiqueServiceCr.desactiverCompteBoutique(req.params.id);
       res.status(201).json(boutique);
     } catch (error) {
       res.status(400).json({ error: error.message });

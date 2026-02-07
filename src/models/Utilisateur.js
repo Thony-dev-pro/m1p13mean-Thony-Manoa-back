@@ -32,11 +32,4 @@ const utilisateurSchema = new mongoose.Schema({
   timestamps: true
 });
 
-utilisateurSchema.pre("save", async function (next) {
-  if (!this.isModified("mdp")) return next();
-
-  this.mdp = await bcrypt.hash(this.mdp, 10);
-  next();
-});
-
 module.exports = mongoose.model("Utilisateur", utilisateurSchema);
