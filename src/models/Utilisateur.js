@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
 const utilisateurSchema = new mongoose.Schema({
   nom: {
@@ -24,10 +25,18 @@ const utilisateurSchema = new mongoose.Schema({
   },
   etat: {
     type: Number,
-    required: true
+    required: true,
+      default: 0
   }
 }, {
   timestamps: true
 });
 
-module.exports = mongoose.model('utilisateur', utilisateurSchema);
+utilisateurSchema.pre("save", async function (next) {
+  if (!this.isModified("mdp")) return next();
+
+  this.mdp = await bcrypt.hash(this.mdp, 10);
+  next();
+});
+
+module.exports = mongoose.model("Utilisateur", utilisateurSchema);
