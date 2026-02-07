@@ -71,7 +71,14 @@ const login = async (mail, mdp) => {
     throw new Error('Compte non activé');
   }
 
-  return user;
+  return {
+    _id: user._id,
+    nom: user.nom,
+    mail: user.mail,
+    contact: user.contact,
+    type: user.type,
+    etat: user.etat
+  };
 };
 
 module.exports = {
