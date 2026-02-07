@@ -28,13 +28,17 @@ const boutiqueService = {
     return await Boutique.findByIdAndUpdate(
       id,
       boutiqueData,
-      { new: true }, // retourne la version mise à jour
+      { new: true, runValidators: true }, // retourne la version mise à jour
     );
   },
 
   // DELETE
-  async deleteBoutique(id) {
-    return await Boutique.findByIdAndDelete(id);
+  async desactiverCompteBoutique(id) {
+    return await Boutique.findByIdAndUpdate(
+      id,
+      { deleted: true },
+      { new: true },
+    );
   },
 };
 

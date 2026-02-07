@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 
 const utilisateurSchema = new mongoose.Schema({
   nom: {
@@ -24,13 +24,17 @@ const utilisateurSchema = new mongoose.Schema({
   },
   etat: {
     type: Number,
-    required: true,
+    default: 0, // 0 = inactif, 1 = actif
+  },
+
+  deleted: {
+    type: Boolean,
+    default: false, // compte actif par défaut
   },
 });
 
-utilisateurSchema.pre('save', async function(next) {
-
-  if (!this.isModified('mdp')) return next();
+utilisateurSchema.pre("save", async function (next) {
+  if (!this.isModified("mdp")) return next();
 
   this.mdp = await bcrypt.hash(this.mdp, 10);
   next();

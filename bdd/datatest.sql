@@ -41,6 +41,17 @@
   }
 ]
 
+[
+  {
+    "nom": "Boulangerie",
+    "mail": "boulangerie@boulangerie.com",
+    "contact": 330778845,
+    "mdp": "123456",
+    "type": 2,
+    "etat": 0
+  }
+]
+
 -- catégorie de produit :
 [
   { "categorie": "Téléphones & Smartphones" },

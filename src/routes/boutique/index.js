@@ -4,5 +4,7 @@ const boutiqueController = require('../../controllers/boutique/boutiqueControlle
 
 router.get('/', boutiqueController.getAllBoutique);
 router.post('/', boutiqueController.createBoutique);
+router.put('/modification-info/:id', boutiqueController.modifierInfoBoutique);
+router.put('/desactivation/:id', boutiqueController.desactiverCompteBoutique);
 
 module.exports = router;
