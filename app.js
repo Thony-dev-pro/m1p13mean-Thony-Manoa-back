@@ -11,6 +11,7 @@ const adminRoutes = require('./src/routes/admin');
 const boutiqueRoutes = require('./src/routes/boutique');
 const articleRoutes = require('./src/routes/teste/articles');
 const categorieRoutes = require('./src/routes/categorie');
+const produitRoutes = require('./src/routes/produit');
 
 // Middleware
 app.use(cors());
@@ -26,6 +27,7 @@ app.use('/admin', adminRoutes);
 app.use('/boutique', boutiqueRoutes);
 app.use('/articles', articleRoutes);
 app.use('/categorieProduit', categorieRoutes);
+app.use('/produitRoutes', produitRoutes);
 
 // Test endpoint
 app.get('/api/test', (req, res) => {
