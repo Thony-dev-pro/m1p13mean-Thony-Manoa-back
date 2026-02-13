@@ -10,22 +10,20 @@ const produitSchema = new mongoose.Schema({
     required: true
   },
   boutique: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Utilisateur',
     required: true
   },
   nombre: {
     type: Number,
     required: true
   },
-  boutique: {
-    type: String,
+  categorie: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Categorie',
     required: true
-  },
-   categorie: {
-    type: String,
-    required: true
-  },
+  }
   
 });
 
-module.exports = mongoose.model('Categorie', produitSchema);
+module.exports = mongoose.model('Produit', produitSchema);

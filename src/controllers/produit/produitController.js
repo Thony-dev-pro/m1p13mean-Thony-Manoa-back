@@ -1,7 +1,7 @@
 const produitService = require("../../services/produit/produitService");
 
 const produitController = {
-  async getAllProduit(req, res) {
+  getAllProduit: async (req, res) => {
     try {
       const produits = await produitService.getAllProduit();
       res.json(produits);
@@ -10,7 +10,7 @@ const produitController = {
     }
   },
 
-  async getProduitById(req, res) {
+  getProduitById: async (req, res) => {
     try {
       const produit = await produitService.getProduitById(req.params.id);
 
@@ -24,24 +24,52 @@ const produitController = {
     }
   },
 
-  async createProduit(req, res) {
+  createProduit: async (req, res) => {
     try {
-      const newProduit = await produitService.createProduit(req.body);
-      res.status(201).json(newProduit);
+      console.log(req.user);
+
+      if (!req.user || !req.user.userId) {
+        return res.status(401).json({ error: "Authentification requise" });
+      }
+
+      const userId = req.user.userId;
+
+      let produitData = req.body;
+
+      if (Array.isArray(produitData)) {
+        produitData = produitData.map((p) => ({
+          ...p,
+          boutique: userId,
+        }));
+      } else {
+        produitData = { ...produitData, boutique: userId };
+      }
+
+      const result = await produitService.createProduit(produitData);
+      res.status(201).json(result);
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
   },
 
-  async updateProduit(req, res) {
+  updateProduit: async (req, res) => {
     try {
+      console.log(req.user);
+
+      if (!req.user || !req.user.userId) {
+        return res.status(401).json({ error: "Authentification requise" });
+      }
+
+      const userId = req.user.userId;
+
       const produit = await produitService.updateProduit(
         req.params.id,
+        userId,
         req.body,
       );
 
       if (!produit) {
-        return res.status(404).json({ message: "produit not found" });
+        return res.status(404).json({ message: "Produit introuvable ou accès interdit" });
       }
 
       res.json(produit);
@@ -50,7 +78,7 @@ const produitController = {
     }
   },
 
-  async deleteProduit(req, res) {
+  deleteProduit: async (req, res) => {
     try {
       const produit = await produitService.deleteProduit(req.params.id);
 
