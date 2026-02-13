@@ -29,7 +29,7 @@ app.use('/boutique', boutiqueRoutes);
 app.use('/articles', articleRoutes);
 app.use('/commande', commandeRoutes);
 app.use('/categorieProduit', categorieRoutes);
-app.use('/produitRoutes', produitRoutes);
+app.use('/produit', produitRoutes);
 
 // Test endpoint
 app.get('/api/test', (req, res) => {

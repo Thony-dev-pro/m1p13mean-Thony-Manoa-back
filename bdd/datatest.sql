@@ -73,3 +73,18 @@
   { "categorie": "Papeterie & Fournitures" }
 ]
 
+
+[
+  {
+    "nomProduit": "Samsung S24",
+    "prix": 4100000,
+    "nombre": 15,
+    "categorie": "65f1b3d9c123456789abcd11"
+  },
+  {
+    "nomProduit": "MacBook Air",
+    "prix": 7800000,
+    "nombre": 5,
+    "categorie": "65f1b3d9c123456789abcd12"
+  }
+]
