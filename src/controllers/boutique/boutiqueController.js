@@ -1,5 +1,6 @@
 const boutiqueService = require('../../services/boutique.service');
 const jwt = require('jsonwebtoken');
+const produitService = require('../../services/produit/produitService');
 
 const boutiqueServiceCr = require("../../services/boutique/boutiqueService");
 
@@ -89,6 +90,17 @@ const boutiqueController = {
     }
   },
 
+  async getMesProduits(req, res) {
+    try {
+      if (!req.user || !req.user.userId) {
+        return res.status(401).json({ error: 'Authentification requise' });
+      }
+      const produits = await produitService.getProduitByBoutiqueId(req.user.userId);
+      res.json(produits);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
 
 };
 

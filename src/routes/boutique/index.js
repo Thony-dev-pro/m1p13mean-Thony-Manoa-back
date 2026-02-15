@@ -9,6 +9,7 @@ router.post('/register', boutiqueController.register);
 router.put('/validate/:userId', authMiddleware , checkRole([TYPE.ADMIN]),boutiqueController.validate);
 router.post('/login', boutiqueController.login);
 router.get('/', boutiqueController.getAllBoutique);
+router.get('/mes-produits', authMiddleware, checkRole([TYPE.BOUTIQUE]), boutiqueController.getMesProduits);
 router.put('/modification-info/:id', boutiqueController.modifierInfoBoutique);
 router.put('/desactivation/:id', boutiqueController.desactiverCompteBoutique);
 

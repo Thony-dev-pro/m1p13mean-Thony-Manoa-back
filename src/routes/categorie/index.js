@@ -7,6 +7,6 @@ const { TYPE } = require('../../constant/utilisateur');
 
 router.get('/', categorieController.getAllCategorieProduit);
 router.post('/create-categorie', authMiddleware, checkRole([TYPE.ADMIN]), categorieController.createCategorieProduit);
-router.put('/update-categorie', authMiddleware, checkRole([TYPE.ADMIN]), categorieController.updateCategorieProduit);
+router.put('/update-categorie/:id', authMiddleware, checkRole([TYPE.ADMIN]), categorieController.updateCategorieProduit);
 
 module.exports = router;

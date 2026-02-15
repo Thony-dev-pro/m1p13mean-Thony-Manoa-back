@@ -88,3 +88,29 @@
     "categorie": "65f1b3d9c123456789abcd12"
   }
 ]
+
+-- produit :
+[
+  {
+    "nomProduit": "Cahier 200 pages",
+    "prix": 3500,
+    "boutique": "698c5af49ddf0404876ff2f2",
+    "nombre": 100,
+    "categorie": "69848209a2206471218ba4d1"
+  },
+  {
+    "nomProduit": "Stylo Bleu BIC",
+    "prix": 500,
+    "boutique": "698c5af49ddf0404876ff2f2",
+    "nombre": 300,
+    "categorie": "69848209a2206471218ba4d1"
+  },
+  {
+    "nomProduit": "Ramette Papier A4",
+    "prix": 25000,
+    "boutique": "698c5af49ddf0404876ff2f2",
+    "nombre": 50,
+    "categorie": "69848209a2206471218ba4d1"
+  }
+]
+
