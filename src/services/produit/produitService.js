@@ -46,11 +46,16 @@ const deleteProduit = async (id) => {
   return await Produit.findByIdAndDelete(id);
 };
 
+const getProduitByBoutiqueId = async (boutiqueId) => {
+  return await Produit.find({ boutique: boutiqueId }).populate('categorie');
+};
+
 module.exports = {
   getAllProduit,
   getProduitById,
   createProduit,
   updateProduit,
   decrementProduitStock,
-  deleteProduit
+  deleteProduit,
+  getProduitByBoutiqueId
 };
