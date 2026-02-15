@@ -14,7 +14,7 @@ const commandeSchema = new mongoose.Schema({
     },
     boutique: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'utilisateur',
+      ref: 'Utilisateur',
       required: true
     },
     prix: {
@@ -32,7 +32,7 @@ const commandeSchema = new mongoose.Schema({
   }],
   utilisateur: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'utilisateur',
+    ref: 'Utilisateur',
     required: true
   },
   etat: {

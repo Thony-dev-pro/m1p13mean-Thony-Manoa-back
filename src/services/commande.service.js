@@ -2,6 +2,7 @@ const Commande = require('../models/Commande');
 const Stock = require('../models/Stock');
 const { ETAT } = require('../constant/commande');
 const { ETAT: ETAT_STOCK } = require('../constant/stock');
+const { decrementProduitStock } = require('./produit/produitService');
 
 const createInitialCommande = async (produits, utilisateurId, lieu) => {
   const newCommande = new Commande({
@@ -20,9 +21,15 @@ const createInitialCommande = async (produits, utilisateurId, lieu) => {
     date: new Date()
   }));
 
+  const produitsUpdates = produits.map(produit => ({
+    id: produit.produit,
+    value: produit.nombre
+  }));
+
   const [savedCommande] = await Promise.all([
     newCommande.save(),
-    Stock.insertMany(stockEntries)
+    Stock.insertMany(stockEntries),
+    decrementProduitStock(produitsUpdates)
   ]);
 
   return savedCommande;
@@ -60,8 +67,16 @@ const canceledCommande = async (commandeId) => {
   return updatedCommande;
 };
 
+const getAllCommandes = async () => {
+  return await Commande.find()
+    .select('_id date utilisateur etat lieu')
+    .populate('utilisateur', 'nom')
+    .sort({ date: -1 });
+};
+
 module.exports = {
   createInitialCommande,
   validateCommande,
-  canceledCommande
+  canceledCommande,
+  getAllCommandes
 };

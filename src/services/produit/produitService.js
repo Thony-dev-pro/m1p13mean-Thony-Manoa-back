@@ -31,6 +31,16 @@ const updateProduit = async (produitId, userId, produitData) => {
   );
 };
 
+const decrementProduitStock = async (updates) => {
+  const bulkOps = updates.map(update => ({
+    updateOne: {
+      filter: { _id: update.id },
+      update: { $inc: { nombre: -update.value } }
+    }
+  }));
+  return await Produit.bulkWrite(bulkOps);
+};
+
 
 const deleteProduit = async (id) => {
   return await Produit.findByIdAndDelete(id);
@@ -41,5 +51,6 @@ module.exports = {
   getProduitById,
   createProduit,
   updateProduit,
+  decrementProduitStock,
   deleteProduit
 };
