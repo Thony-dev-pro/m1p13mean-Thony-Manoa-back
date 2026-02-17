@@ -7,7 +7,8 @@ module.exports = {
   ETAT: {
     INACTIF: 0,
     ACTIF: 1,
-    A_VALIDER: 2
+    A_VALIDER: 2,
+    BLOQUER : 3
   },
   SALT: 10
 };

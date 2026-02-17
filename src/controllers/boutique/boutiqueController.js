@@ -9,6 +9,8 @@ const boutiqueController = {
     res.json({ message: 'Boutique controller working' });
   },
 
+  
+
   register: async (req, res) => {
     try {
       const result = await boutiqueService.registration(req.body);
@@ -43,6 +45,15 @@ const boutiqueController = {
     } catch (error) {
       console.log(error)
       res.status(400).json({ error: error.message });
+    }
+  },
+
+  getListeBoutique: async (req, res) => {
+    try {
+      const boutiques = await boutiqueServiceCr.getBoutique();
+      res.json(boutiques);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
   },
   // GET ALL

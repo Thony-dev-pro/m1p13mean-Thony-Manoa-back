@@ -1,11 +1,11 @@
 const Produit = require("../../models/Produit");
 
 const getAllProduit = async () => {
-  return await Produit.find().populate('categorie');
+  return await Produit.find().populate('categorie').populate('boutique');
 };
 
 const getProduitById = async (id) => {
-  return await Produit.findById(id);
+  return await Produit.findById(id).populate('categorie').populate('boutique');
 };
 
 const createProduit = async (produitData) => {
@@ -47,7 +47,7 @@ const deleteProduit = async (id) => {
 };
 
 const getProduitByBoutiqueId = async (boutiqueId) => {
-  return await Produit.find({ boutique: boutiqueId }).populate('categorie');
+  return await Produit.find({ boutique: boutiqueId }).populate('categorie').populate('boutique');
 };
 
 module.exports = {
