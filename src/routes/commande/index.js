@@ -6,6 +6,7 @@ const checkRole = require("../../middleware/checkRole");
 const {TYPE} = require("../../constant/utilisateur");
 
 router.get('/', authMiddleware, checkRole([TYPE.BOUTIQUE]), commandeController.getAllCommandes);
+router.get('/:commandeId', authMiddleware, checkRole([TYPE.BOUTIQUE]), commandeController.getCommandeById);
 router.post('/',authMiddleware , checkRole([TYPE.ACHETEUR]), commandeController.createCommande);
 router.put('/validate/:commandeId', authMiddleware , checkRole([TYPE.BOUTIQUE]), commandeController.validateCommande);
 router.put('/cancel/:commandeId', authMiddleware , checkRole([TYPE.BOUTIQUE]), commandeController.cancelCommande);

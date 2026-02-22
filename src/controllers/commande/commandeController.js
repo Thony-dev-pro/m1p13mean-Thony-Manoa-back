@@ -35,10 +35,24 @@ const commandeController = {
 
   getAllCommandes: async (req, res) => {
     try {
-      const result = await commandeService.getAllCommandes();
+      const boutiqueId = req.user.userId;
+      const result = await commandeService.getAllCommandes(boutiqueId);
       res.json(result);
     } catch (error) {
       console.log(error);
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  getCommandeById: async (req, res) => {
+    try {
+      const { commandeId } = req.params;
+      const result = await commandeService.getCommandeById(commandeId);
+      if (!result) {
+        return res.status(404).json({ error: 'Commande non trouvée' });
+      }
+      res.json(result);
+    } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }

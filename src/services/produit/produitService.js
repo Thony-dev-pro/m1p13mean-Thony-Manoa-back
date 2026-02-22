@@ -50,6 +50,14 @@ const getProduitByBoutiqueId = async (boutiqueId) => {
   return await Produit.find({ boutique: boutiqueId }).populate('categorie').populate('boutique');
 };
 
+const getProduitByCategorie = async (categorieId) => {
+  return await Produit.find({ categorie: categorieId }).populate('categorie').populate('boutique');
+};
+
+const getAvailableProduits = async () => {
+  return await Produit.find({ nombre: { $gt: 0 } }).populate('categorie').populate('boutique');
+};
+
 module.exports = {
   getAllProduit,
   getProduitById,
@@ -57,5 +65,7 @@ module.exports = {
   updateProduit,
   decrementProduitStock,
   deleteProduit,
-  getProduitByBoutiqueId
+  getProduitByBoutiqueId,
+  getProduitByCategorie,
+  getAvailableProduits
 };

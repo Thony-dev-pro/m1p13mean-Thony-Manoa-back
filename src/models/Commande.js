@@ -9,7 +9,7 @@ const commandeSchema = new mongoose.Schema({
   produits: [{
     produit: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Article',
+      ref: 'Produit',
       required: true
     },
     boutique: {
@@ -39,6 +39,10 @@ const commandeSchema = new mongoose.Schema({
     type: Number,
     required: true,
     enum: [0, 1, 2]
+  },
+  prixTotal: {
+    type: Number,
+    required: true
   },
   lieu: {
     type: String,

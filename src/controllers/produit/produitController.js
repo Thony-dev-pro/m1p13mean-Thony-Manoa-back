@@ -91,6 +91,24 @@ const produitController = {
       res.status(500).json({ error: error.message });
     }
   },
+
+  getProduitByCategorie: async (req, res) => {
+    try {
+      const produits = await produitService.getProduitByCategorie(req.params.categorieId);
+      res.json(produits);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  getAvailableProduits: async (req, res) => {
+    try {
+      const produits = await produitService.getAvailableProduits();
+      res.json(produits);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
 };
 
 module.exports = produitController;
