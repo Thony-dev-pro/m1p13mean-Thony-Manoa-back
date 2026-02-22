@@ -1,5 +1,6 @@
 
 const jwt = require('jsonwebtoken');
+const {registration} = require("../../services/acheteur.service");
 
 const acheteurController = {
   getAcheteur: (req, res) => {
@@ -8,9 +9,10 @@ const acheteurController = {
   
   register: async (req, res) => {
     try {
-      const result = await acheteurService.registration(req.body);
+      const result = await registration(req.body);
       res.status(201).json(result);
     } catch (error) {
+      console.log(error)
       res.status(400).json({ error: error.message });
     }
   },
@@ -28,6 +30,7 @@ const acheteurController = {
       
       res.json({ user, token });
     } catch (error) {
+      console.log(error);
       res.status(400).json({ error: error.message });
     }
   },
