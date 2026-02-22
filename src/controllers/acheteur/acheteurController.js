@@ -1,6 +1,6 @@
 
 const jwt = require('jsonwebtoken');
-const {registration} = require("../../services/acheteur.service");
+const {registration,login} = require("../../services/acheteur.service");
 
 const acheteurController = {
   getAcheteur: (req, res) => {
@@ -20,7 +20,7 @@ const acheteurController = {
   login: async (req, res) => {
     try {
       const { mail, mdp } = req.body;
-      const user = await acheteurService.login(mail, mdp);
+      const user = await login(mail, mdp);
       
       const token = jwt.sign(
         { userId: user._id, type: user.type },
