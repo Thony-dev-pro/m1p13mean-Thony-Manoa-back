@@ -17,6 +17,7 @@ const produitRoutes = require('./src/routes/produit');
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use('/uploads', express.static('uploads'));
 
 // Connexion à MongoDB
 mongoose.connect(process.env.MONGO_URI).then(() => console.log("eeehh MongoDB connecté"))

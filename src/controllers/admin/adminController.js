@@ -1,4 +1,5 @@
 const adminService = require('../../services/admin.service');
+const acheteurService = require('../../services/acheteur.service');
 const jwt = require('jsonwebtoken');
 
 const adminController = {
@@ -30,6 +31,20 @@ const adminController = {
       res.json({ user, token });
     } catch (error) {
       res.status(400).json({ error: error.message });
+    }
+  },
+  getListeAcheteur: async (req, res) => {
+    try {
+      console.log(req.user);
+
+      if (!req.user || !req.user.userId) {
+        return res.status(401).json({ error: "Authentification requise" });
+      }
+      
+      const acheteurs = await acheteurService.getListAcheteurs();
+      res.json(acheteurs);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
   }
 };

@@ -64,7 +64,12 @@ const login = async (mail, mdp) => {
   };
 };
 
+const getListAcheteurs = async () => {
+  return await Utilisateur.find({ type: TYPE.ACHETEUR });
+};
+
 module.exports = {
   registration,
-  login
+  login,
+  getListAcheteurs
 };

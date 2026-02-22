@@ -36,6 +36,10 @@ const produitController = {
 
       let produitData = req.body;
 
+      if (req.file) {
+        produitData.image = req.file.path;
+      }
+
       if (Array.isArray(produitData)) {
         produitData = produitData.map((p) => ({
           ...p,
@@ -61,11 +65,16 @@ const produitController = {
       }
 
       const userId = req.user.userId;
+      const produitData = req.body;
+
+      if (req.file) {
+        produitData.image = req.file.path;
+      }
 
       const produit = await produitService.updateProduit(
         req.params.id,
         userId,
-        req.body,
+        produitData,
       );
 
       if (!produit) {

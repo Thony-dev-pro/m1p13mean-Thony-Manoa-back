@@ -1,4 +1,4 @@
-const acheteurService = require('../../services/acheteur.service');
+
 const jwt = require('jsonwebtoken');
 
 const acheteurController = {
@@ -30,7 +30,9 @@ const acheteurController = {
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
-  }
+  },
+
+  
 };
 
 module.exports = acheteurController;

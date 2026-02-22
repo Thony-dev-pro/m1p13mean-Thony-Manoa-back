@@ -22,6 +22,10 @@ const produitSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Categorie',
     required: true
+  },
+  image: {
+    type: String,
+    default: null
   }
   
 });
