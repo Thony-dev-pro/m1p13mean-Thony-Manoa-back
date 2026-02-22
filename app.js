@@ -13,6 +13,7 @@ const articleRoutes = require('./src/routes/teste/articles');
 const commandeRoutes = require('./src/routes/commande');
 const categorieRoutes = require('./src/routes/categorie');
 const produitRoutes = require('./src/routes/produit');
+const dashboardRoutes = require('./src/routes/dashboard');
 
 // Middleware
 app.use(cors());
@@ -31,6 +32,7 @@ app.use('/articles', articleRoutes);
 app.use('/commande', commandeRoutes);
 app.use('/categorieProduit', categorieRoutes);
 app.use('/produit', produitRoutes);
+app.use('/dashboard', dashboardRoutes);
 
 // Test endpoint
 app.get('/api/test', (req, res) => {
