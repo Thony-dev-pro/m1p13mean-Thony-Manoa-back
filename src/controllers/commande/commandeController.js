@@ -36,7 +36,9 @@ const commandeController = {
   getAllCommandes: async (req, res) => {
     try {
       const boutiqueId = req.user.userId;
-      const result = await commandeService.getAllCommandes(boutiqueId);
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const result = await commandeService.getAllCommandes(boutiqueId, page, limit);
       res.json(result);
     } catch (error) {
       console.log(error);

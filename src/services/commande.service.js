@@ -70,12 +70,26 @@ const canceledCommande = async (commandeId) => {
   return updatedCommande;
 };
 
-const getAllCommandes = async (boutiqueId) => {
+const getAllCommandes = async (boutiqueId, page = 1, limit = 10) => {
   const filter = boutiqueId ? { 'produits.boutique': boutiqueId } : {};
-  return await Commande.find(filter)
-    .select('_id date utilisateur etat lieu')
-    .populate('utilisateur', 'nom')
-    .sort({ date: -1 });
+  const skip = (page - 1) * limit;
+  
+  const [commandes, total] = await Promise.all([
+    Commande.find(filter)
+      .select('_id date utilisateur etat lieu')
+      .populate('utilisateur', 'nom')
+      .sort({ date: -1 })
+      .skip(skip)
+      .limit(limit),
+    Commande.countDocuments(filter)
+  ]);
+  
+  return {
+    commandes,
+    total,
+    page,
+    totalPages: Math.ceil(total / limit)
+  };
 };
 
 const getCommandeById = async (commandeId) => {
