@@ -1,11 +1,16 @@
 const Commande = require('../models/Commande');
-const { ETAT } = require('../constant/commande');
 
-const countOrdersByEtatAndBoutique = async (etat, boutiqueId) => {
-  return await Commande.countDocuments({ 
+const countOrdersByEtatAndBoutique = async (etat, boutiqueId, startDate, endDate) => {
+  const filter = { 
     etat,
-    'produits.boutique': boutiqueId 
-  });
+    'produits.boutique': boutiqueId
+  };
+  
+  if (startDate && endDate) {
+    filter.date = { $gte: new Date(startDate), $lte: new Date(endDate) };
+  }
+  
+  return await Commande.countDocuments(filter);
 };
 
 const sumPrixTotalByEtatAndBoutique = async (etat, boutiqueId) => {

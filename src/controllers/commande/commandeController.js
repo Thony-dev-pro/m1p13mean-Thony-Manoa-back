@@ -4,7 +4,7 @@ const commandeController = {
   createCommande: async (req, res) => {
     try {
       const { produits, lieu } = req.body;
-      const utilisateurId = req.user.userId
+      const utilisateurId = req.user.userId;
       const result = await commandeService.createInitialCommande(produits, utilisateurId, lieu);
       res.status(201).json(result);
     } catch (error) {

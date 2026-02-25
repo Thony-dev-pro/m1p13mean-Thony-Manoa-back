@@ -104,6 +104,7 @@ const produitController = {
   getProduitByCategorie: async (req, res) => {
     try {
       const produits = await produitService.getProduitByCategorie(req.params.categorieId);
+      console.log(produits);
       res.json(produits);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -113,6 +114,20 @@ const produitController = {
   getAvailableProduits: async (req, res) => {
     try {
       const produits = await produitService.getAvailableProduits();
+      res.json(produits);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  searchProduits: async (req, res) => {
+    try {
+      const { q, categorie } = req.query;
+      /*if (!q) {
+        const produits = await produitService.getAvailableProduits();
+        return res.json(produits);
+      }*/
+      const produits = await produitService.searchProduits(q, categorie);
       res.json(produits);
     } catch (error) {
       res.status(500).json({ error: error.message });

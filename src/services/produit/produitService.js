@@ -51,11 +51,30 @@ const getProduitByBoutiqueId = async (boutiqueId) => {
 };
 
 const getProduitByCategorie = async (categorieId) => {
-  return await Produit.find({ categorie: categorieId }).populate('categorie').populate('boutique');
+  return await Produit.find({ categorie: categorieId, nombre: { $gt: 0 } }).populate('categorie').populate('boutique');
 };
 
 const getAvailableProduits = async () => {
   return await Produit.find({ nombre: { $gt: 0 } }).populate('categorie').populate('boutique');
+};
+
+const searchProduits = async (searchTerm, categorieId) => {
+  const regex = new RegExp(searchTerm, 'i');
+  
+  const filter = {
+    $or: [
+      { nomProduit: regex },
+      { prix: !isNaN(searchTerm) ? Number(searchTerm) : null }
+    ]
+  };
+  
+  if (categorieId) {
+    filter.categorie = categorieId;
+  }
+  
+  return await Produit.find(filter)
+    .populate('categorie')
+    .populate('boutique');
 };
 
 module.exports = {
@@ -67,5 +86,6 @@ module.exports = {
   deleteProduit,
   getProduitByBoutiqueId,
   getProduitByCategorie,
-  getAvailableProduits
+  getAvailableProduits,
+  searchProduits
 };

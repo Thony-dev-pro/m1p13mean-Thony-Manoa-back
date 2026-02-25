@@ -16,7 +16,8 @@ const produitSchema = new mongoose.Schema({
   },
   nombre: {
     type: Number,
-    required: true
+    required: true,
+    min: [0, 'Le nombre ne peut pas être négatif']
   },
   categorie: {
     type: mongoose.Schema.Types.ObjectId,

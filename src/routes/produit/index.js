@@ -7,6 +7,7 @@ const upload = require("../../middleware/upload");
 const { TYPE } = require('../../constant/utilisateur');
 
 router.get('/', produitController.getAllProduit);
+router.get('/search', produitController.searchProduits);
 router.get('/available', produitController.getAvailableProduits);
 router.get('/categorie/:categorieId', produitController.getProduitByCategorie);
 router.get('/:id', produitController.getProduitById);
