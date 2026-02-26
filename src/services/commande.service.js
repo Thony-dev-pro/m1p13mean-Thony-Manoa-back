@@ -5,11 +5,14 @@ const { ETAT: ETAT_STOCK } = require('../constant/stock');
 const { decrementProduitStock } = require('./produit/produitService');
 
 const createInitialCommande = async (produits, utilisateurId, lieu) => {
+  const prixTotal = produits.reduce((sum, produit) => sum + produit.prixTotal, 0);
+  
   const newCommande = new Commande({
     date: new Date(),
     produits: produits,
     utilisateur: utilisateurId,
     etat: ETAT.A_VALIDER,
+    prixTotal: prixTotal,
     lieu: lieu
   });
 
@@ -67,16 +70,25 @@ const canceledCommande = async (commandeId) => {
   return updatedCommande;
 };
 
-const getAllCommandes = async () => {
-  return await Commande.find()
+const getAllCommandes = async (boutiqueId) => {
+  const filter = boutiqueId ? { 'produits.boutique': boutiqueId } : {};
+  return await Commande.find(filter)
     .select('_id date utilisateur etat lieu')
     .populate('utilisateur', 'nom')
     .sort({ date: -1 });
+};
+
+const getCommandeById = async (commandeId) => {
+  return await Commande.findById(commandeId)
+    .populate('utilisateur', 'nom')
+    .populate('produits.produit' , 'nomProduit')
+    .populate('produits.boutique', 'nom');
 };
 
 module.exports = {
   createInitialCommande,
   validateCommande,
   canceledCommande,
-  getAllCommandes
+  getAllCommandes,
+  getCommandeById
 };
