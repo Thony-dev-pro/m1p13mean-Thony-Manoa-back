@@ -1,46 +1,51 @@
-const mongoose = require('mongoose');
 const Stock = require('../models/Stock');
 const Produit = require('../models/Produit');
 const { ETAT } = require('../constant/stock');
 
 const insertStock = async (stockData) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
-
-  try {
-    const produit = await Produit.findById(stockData.produit).session(session);
-    
-    if (!produit) {
-      throw new Error('Produit non trouvé');
-    }
-
-    const stockEntries = [{
-      produit: stockData.produit,
-      prix: stockData.prix,
-      nombre: stockData.nombre,
-      etat: ETAT.AJOUT,
-      date: new Date()
-    }];
-
-    const [insertedStock] = await Promise.all([
-      Stock.insertMany(stockEntries, { session }),
-      Produit.findByIdAndUpdate(
-        stockData.produit,
-        { $inc: { nombre: stockData.nombre } },
-        { session, new: true }
-      )
-    ]);
-
-    await session.commitTransaction();
-    return insertedStock[0];
-  } catch (error) {
-    await session.abortTransaction();
-    throw error;
-  } finally {
-    session.endSession();
+  const produit = await Produit.findById(stockData.produit);
+  
+  if (!produit) {
+    throw new Error('Produit non trouvé');
   }
+
+  const stockEntries = [{
+    produit: stockData.produit,
+    prix: stockData.prix,
+    nombre: stockData.nombre,
+    etat: ETAT.AJOUT,
+    date: new Date()
+  }];
+
+  const updateData = { $inc: { nombre: stockData.nombre } };
+  
+  if (stockData.prix) {
+    updateData.prix = stockData.prix;
+  }
+
+  const [insertedStock] = await Promise.all([
+    Stock.insertMany(stockEntries),
+    Produit.findByIdAndUpdate(
+      stockData.produit,
+      updateData,
+      { new: true }
+    )
+  ]);
+
+  return insertedStock[0];
+};
+
+const getStockByBoutique = async (boutiqueId) => {
+  const produits = await Produit.find({ boutique: boutiqueId }).select('_id');
+  
+  const produitIds = produits.map(p => p._id);
+  
+  return await Stock.find({ produit: { $in: produitIds } })
+    .populate('produit', 'nomProduit prix image')
+    .sort({ date: -1 });
 };
 
 module.exports = {
-  insertStock
+  insertStock,
+  getStockByBoutique
 };
