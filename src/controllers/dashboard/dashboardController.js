@@ -1,4 +1,5 @@
 const dashboardService = require('../../services/dashboard.boutique.service');
+const dashboardAdminService = require('../../services/dashboard.service');
 const { ETAT } = require('../../constant/commande');
 
 const dashboardController = {
@@ -25,6 +26,16 @@ const dashboardController = {
         allProductsSales,
         salesByMonth
       });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  dashboardAdmin: async (req, res) => {
+    try {
+      const { dateDebut, dateFin } = req.query;
+      const stats = await dashboardAdminService.getDashboardStats(dateDebut, dateFin);
+      res.json(stats);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
