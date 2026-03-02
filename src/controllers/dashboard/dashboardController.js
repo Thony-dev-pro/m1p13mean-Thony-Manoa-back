@@ -7,9 +7,9 @@ const dashboardController = {
     try {
       const boutiqueId = req.user.userId;
       const { startDate, endDate } = req.query;
-      
+
       const [payer, aValider, totalPayer, totalPayerCurrentMonth, bestProduct, allProductsSales, salesByMonth] = await Promise.all([
-        dashboardService.countOrdersByEtatAndBoutique(ETAT.PAYER, boutiqueId),
+        dashboardService.countOrdersByEtatAndBoutique(ETAT.PAYER, boutiqueId, startDate, endDate),
         dashboardService.countOrdersByEtatAndBoutique(ETAT.A_VALIDER, boutiqueId, startDate, endDate),
         dashboardService.sumPrixTotalByEtatAndBoutique(ETAT.PAYER, boutiqueId),
         dashboardService.sumPrixTotalCurrentMonthByEtatAndBoutique(ETAT.PAYER, boutiqueId),

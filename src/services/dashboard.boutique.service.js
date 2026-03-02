@@ -1,16 +1,23 @@
 const Commande = require('../models/Commande');
+const mongoose = require('mongoose');
 
 const countOrdersByEtatAndBoutique = async (etat, boutiqueId, startDate, endDate) => {
   const filter = { 
     etat,
     'produits.boutique': boutiqueId
   };
-  
+
   if (startDate && endDate) {
-    filter.date = { $gte: new Date(startDate), $lte: new Date(endDate) };
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    end.setHours(23, 59, 59, 999);
+    filter.date = { $gte: start, $lte: end };
   }
+
+  console.log(filter.date)
   
-  return await Commande.countDocuments(filter);
+  const a = await Commande.countDocuments(filter);
+  return a;
 };
 
 const sumPrixTotalByEtatAndBoutique = async (etat, boutiqueId) => {
@@ -18,7 +25,7 @@ const sumPrixTotalByEtatAndBoutique = async (etat, boutiqueId) => {
     {
       $match: {
         etat,
-        'produits.boutique': boutiqueId
+        'produits.boutique': new mongoose.Types.ObjectId(boutiqueId)
       }
     },
     {
@@ -35,12 +42,13 @@ const sumPrixTotalCurrentMonthByEtatAndBoutique = async (etat, boutiqueId) => {
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
   const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
-  
+
+
   const result = await Commande.aggregate([
     {
       $match: {
         etat,
-        'produits.boutique': boutiqueId,
+        'produits.boutique': new mongoose.Types.ObjectId(boutiqueId),
         date: { $gte: startOfMonth, $lte: endOfMonth }
       }
     },
@@ -55,34 +63,33 @@ const sumPrixTotalCurrentMonthByEtatAndBoutique = async (etat, boutiqueId) => {
 };
 
 const getBestProductByBoutique = async (boutiqueId) => {
-  const Stock = require('../models/Stock');
   const mongoose = require('mongoose');
-  const { ETAT: ETAT_STOCK } = require('../constant/stock');
+  const { ETAT } = require('../constant/commande');
   
-  const result = await Stock.aggregate([
+  const result = await Commande.aggregate([
+    { $unwind: '$produits' },
+    {
+      $match: {
+        'produits.boutique': new mongoose.Types.ObjectId(boutiqueId),
+        etat: ETAT.PAYER
+      }
+    },
+    {
+      $group: {
+        _id: '$produits.produit',
+        totalNombre: { $sum: '$produits.nombre' },
+        totalRevenue: { $sum: '$produits.prixTotal' }
+      }
+    },
     {
       $lookup: {
         from: 'produits',
-        localField: 'produit',
+        localField: '_id',
         foreignField: '_id',
         as: 'produitInfo'
       }
     },
     { $unwind: '$produitInfo' },
-    {
-      $match: {
-        'produitInfo.boutique': new mongoose.Types.ObjectId(boutiqueId),
-        etat: ETAT_STOCK.VENTE
-      }
-    },
-    {
-      $group: {
-        _id: '$produit',
-        totalNombre: { $sum: '$nombre' },
-        totalRevenue: { $sum: { $multiply: ['$nombre', '$prix'] } },
-        produitInfo: { $first: '$produitInfo' }
-      }
-    },
     { $sort: { totalNombre: -1 } },
     { $limit: 1 }
   ]);
@@ -91,34 +98,32 @@ const getBestProductByBoutique = async (boutiqueId) => {
 };
 
 const getAllProductsSalesByBoutique = async (boutiqueId) => {
-  const Stock = require('../models/Stock');
-  const mongoose = require('mongoose');
-  const { ETAT: ETAT_STOCK } = require('../constant/stock');
+  const { ETAT } = require('../constant/commande');
   
-  const result = await Stock.aggregate([
+  const result = await Commande.aggregate([
+    { $unwind: '$produits' },
+    {
+      $match: {
+        'produits.boutique': new mongoose.Types.ObjectId(boutiqueId),
+        etat: ETAT.PAYER
+      }
+    },
+    {
+      $group: {
+        _id: '$produits.produit',
+        totalNombre: { $sum: '$produits.nombre' },
+        totalRevenue: { $sum: '$produits.prixTotal' }
+      }
+    },
     {
       $lookup: {
         from: 'produits',
-        localField: 'produit',
+        localField: '_id',
         foreignField: '_id',
         as: 'produitInfo'
       }
     },
     { $unwind: '$produitInfo' },
-    {
-      $match: {
-        'produitInfo.boutique': new mongoose.Types.ObjectId(boutiqueId),
-        etat: ETAT_STOCK.VENTE
-      }
-    },
-    {
-      $group: {
-        _id: '$produit',
-        totalNombre: { $sum: '$nombre' },
-        totalRevenue: { $sum: { $multiply: ['$nombre', '$prix'] } },
-        produitInfo: { $first: '$produitInfo' }
-      }
-    },
     { $sort: { totalNombre: -1 } }
   ]);
   
@@ -126,33 +131,19 @@ const getAllProductsSalesByBoutique = async (boutiqueId) => {
 };
 
 const getSalesByMonthByBoutique = async (boutiqueId) => {
-  const Stock = require('../models/Stock');
-  const mongoose = require('mongoose');
-  const { ETAT: ETAT_STOCK } = require('../constant/stock');
+  const { ETAT } = require('../constant/commande');
   
   const currentYear = new Date().getFullYear();
   const startOfYear = new Date(currentYear, 0, 1);
   const endOfYear = new Date(currentYear, 11, 31, 23, 59, 59, 999);
   
-  const result = await Stock.aggregate([
+  const result = await Commande.aggregate([
+    { $unwind: '$produits' },
     {
       $match: {
-        etat: ETAT_STOCK.VENTE,
+        'produits.boutique': new mongoose.Types.ObjectId(boutiqueId),
+        etat: ETAT.PAYER,
         date: { $gte: startOfYear, $lte: endOfYear }
-      }
-    },
-    {
-      $lookup: {
-        from: 'produits',
-        localField: 'produit',
-        foreignField: '_id',
-        as: 'produitInfo'
-      }
-    },
-    { $unwind: '$produitInfo' },
-    {
-      $match: {
-        'produitInfo.boutique': new mongoose.Types.ObjectId(boutiqueId)
       }
     },
     {
@@ -161,8 +152,8 @@ const getSalesByMonthByBoutique = async (boutiqueId) => {
           year: { $year: '$date' },
           month: { $month: '$date' }
         },
-        totalNombre: { $sum: '$nombre' },
-        totalRevenue: { $sum: { $multiply: ['$nombre', '$prix'] } }
+        totalNombre: { $sum: '$produits.nombre' },
+        totalRevenue: { $sum: '$produits.prixTotal' }
       }
     },
     { $sort: { '_id.month': 1 } }

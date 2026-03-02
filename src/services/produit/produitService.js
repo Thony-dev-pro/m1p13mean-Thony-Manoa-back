@@ -1,4 +1,6 @@
 const Produit = require("../../models/Produit");
+const Stock = require("../../models/Stock");
+const { ETAT } = require("../../constant/stock");
 
 const getAllProduit = async () => {
   return await Produit.find().populate('categorie').populate('boutique');
@@ -10,10 +12,31 @@ const getProduitById = async (id) => {
 
 const createProduit = async (produitData) => {
   if (Array.isArray(produitData)) {
-    return await Produit.insertMany(produitData);
+    const produits = await Produit.insertMany(produitData);
+    
+    const stockEntries = produits.map(p => ({
+      produit: p._id,
+      prix: p.prix,
+      nombre: p.nombre,
+      etat: ETAT.AJOUT,
+      date: new Date()
+    }));
+    
+    await Stock.insertMany(stockEntries);
+    return produits;
   } else {
     const produit = new Produit(produitData);
-    return await produit.save();
+    const savedProduit = await produit.save();
+    
+    await Stock.create({
+      produit: savedProduit._id,
+      prix: savedProduit.prix,
+      nombre: savedProduit.nombre,
+      etat: ETAT.AJOUT,
+      date: new Date()
+    });
+    
+    return savedProduit;
   }
 };
 
