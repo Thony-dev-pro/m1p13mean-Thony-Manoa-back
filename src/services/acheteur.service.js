@@ -18,6 +18,11 @@ const registration = async (userData) => {
     throw new Error('Le mot de passe est requis');
   }
   
+  const existingUser = await Utilisateur.findOne({ mail });
+  if (existingUser) {
+    throw new Error('Cet email est déjà utilisé');
+  }
+  
   const hashedPassword = await bcrypt.hash(mdp, SALT);
   
   const newUser = new Utilisateur({
