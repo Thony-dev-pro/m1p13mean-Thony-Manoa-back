@@ -78,7 +78,7 @@ const getProduitByCategorie = async (categorieId) => {
 };
 
 const getAvailableProduits = async () => {
-  return await Produit.find({ nombre: { $gt: 0 } }).populate('categorie').populate('boutique');
+  return await Produit.find({ nombre: { $gte: 1 } }).populate('categorie').populate('boutique');
 };
 
 const searchProduits = async (searchTerm, categorieId) => {
