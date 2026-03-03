@@ -20,13 +20,22 @@ const countOrdersByEtatAndBoutique = async (etat, boutiqueId, startDate, endDate
   return a;
 };
 
-const sumPrixTotalByEtatAndBoutique = async (etat, boutiqueId) => {
+const sumPrixTotalByEtatAndBoutique = async (etat, boutiqueId, startDate, endDate) => {
+  const matchFilter = {
+    etat,
+    'produits.boutique': new mongoose.Types.ObjectId(boutiqueId)
+  };
+
+  if (startDate && endDate) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    end.setHours(23, 59, 59, 999);
+    matchFilter.date = { $gte: start, $lte: end };
+  }
+
   const result = await Commande.aggregate([
     {
-      $match: {
-        etat,
-        'produits.boutique': new mongoose.Types.ObjectId(boutiqueId)
-      }
+      $match: matchFilter
     },
     {
       $group: {
@@ -97,16 +106,25 @@ const getBestProductByBoutique = async (boutiqueId) => {
   return result.length > 0 ? result[0] : null;
 };
 
-const getAllProductsSalesByBoutique = async (boutiqueId) => {
+const getAllProductsSalesByBoutique = async (boutiqueId, startDate, endDate) => {
   const { ETAT } = require('../constant/commande');
+  
+  const matchFilter = {
+    'produits.boutique': new mongoose.Types.ObjectId(boutiqueId),
+    etat: ETAT.PAYER
+  };
+
+  if (startDate && endDate) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    end.setHours(23, 59, 59, 999);
+    matchFilter.date = { $gte: start, $lte: end };
+  }
   
   const result = await Commande.aggregate([
     { $unwind: '$produits' },
     {
-      $match: {
-        'produits.boutique': new mongoose.Types.ObjectId(boutiqueId),
-        etat: ETAT.PAYER
-      }
+      $match: matchFilter
     },
     {
       $group: {

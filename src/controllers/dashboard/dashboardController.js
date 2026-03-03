@@ -11,10 +11,10 @@ const dashboardController = {
       const [payer, aValider, totalPayer, totalPayerCurrentMonth, bestProduct, allProductsSales, salesByMonth] = await Promise.all([
         dashboardService.countOrdersByEtatAndBoutique(ETAT.PAYER, boutiqueId, startDate, endDate),
         dashboardService.countOrdersByEtatAndBoutique(ETAT.A_VALIDER, boutiqueId, startDate, endDate),
-        dashboardService.sumPrixTotalByEtatAndBoutique(ETAT.PAYER, boutiqueId),
+        dashboardService.sumPrixTotalByEtatAndBoutique(ETAT.PAYER, boutiqueId, startDate, endDate),
         dashboardService.sumPrixTotalCurrentMonthByEtatAndBoutique(ETAT.PAYER, boutiqueId),
         dashboardService.getBestProductByBoutique(boutiqueId),
-        dashboardService.getAllProductsSalesByBoutique(boutiqueId),
+        dashboardService.getAllProductsSalesByBoutique(boutiqueId, startDate, endDate),
         dashboardService.getSalesByMonthByBoutique(boutiqueId)
       ]);
       res.json({
