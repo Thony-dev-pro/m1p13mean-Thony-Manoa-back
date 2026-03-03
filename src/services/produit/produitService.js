@@ -78,7 +78,7 @@ const getProduitByCategorie = async (categorieId) => {
 };
 
 const getAvailableProduits = async () => {
-  return await Produit.find({ nombre: { $gt: 0 } }).populate('categorie').populate('boutique');
+  return await Produit.find({ nombre: { $gte: 1 } }).populate('categorie').populate('boutique');
 };
 
 const searchProduits = async (searchTerm, categorieId) => {
@@ -87,8 +87,9 @@ const searchProduits = async (searchTerm, categorieId) => {
   const filter = {
     $or: [
       { nomProduit: regex },
-      { prix: !isNaN(searchTerm) ? Number(searchTerm) : null }
-    ]
+      { prix: !isNaN(searchTerm) ? Number(searchTerm) : null },
+    ],
+    nombre: { $gte: 1 }
   };
   
   if (categorieId) {
